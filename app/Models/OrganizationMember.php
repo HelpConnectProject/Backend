@@ -15,12 +15,11 @@ class OrganizationMember extends Model
     protected static function booted(): void
     {
         static::saving(function (OrganizationMember $member) {
-            // Csak owner vagy manager lehet
+
             if (! in_array($member->role, ['owner', 'manager'], true)) {
                 throw new \InvalidArgumentException('Érvénytelen szerep: csak owner vagy manager lehet.');
             }
 
-            // Egy organizationhez csak egy owner lehet
             if ($member->role === 'owner') {
                 $query = static::where('organization_id', $member->organization_id)
                     ->where('role', 'owner');

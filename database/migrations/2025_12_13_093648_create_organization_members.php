@@ -16,12 +16,11 @@ return new class extends Migration
             $table->foreignId('organization_id')->references('id')->on('organizations')->onDelete('cascade');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
 
-            // Csak két szerep használata: owner, manager (modellben is érvényesítve)
             $table->string('role', 50)->default('manager');
 
             $table->timestamps();
 
-            // Egy user csak egyszer lehet tagja egy organizationnek
+
             $table->unique(['organization_id', 'user_id']);
         });
     }
