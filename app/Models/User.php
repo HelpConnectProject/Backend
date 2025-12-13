@@ -21,6 +21,15 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'status',
+        'phone',
+        'city',
+        'about',
+        'interests',
+        'qualification',
+        'experience',
+        'profile_image',
     ];
 
     /**
@@ -44,5 +53,29 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Kapcsolatok
+
+    public function organizations()
+    {
+        return $this->belongsToMany(Organization::class, 'organization_members')
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    public function ownedOrganizations()
+    {
+        return $this->organizations()->wherePivot('role', 'owner');
+    }
+
+    public function managedOrganizations()
+    {
+        return $this->organizations()->wherePivot('role', 'manager');
+    }
+
+    public function qualifications()
+    {
+        return $this->hasMany(UserQualification::class);
     }
 }

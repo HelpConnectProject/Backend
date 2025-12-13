@@ -13,16 +13,16 @@ return new class extends Migration
     {
         Schema::create('event_registrations', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('user_id')
-                  ->constrained('users')
-                  ->onDelete('cascade');
+                ->constrained('users')
+                ->onDelete('cascade');
 
             $table->foreignId('event_id')
-                  ->constrained('events')
-                  ->onDelete('cascade');
+                ->constrained('events')
+                ->onDelete('cascade');
 
-            $table->enum('status', ['Függőben', 'Elfogadva', 'Lemondva'])
-                  ->default('Függőben');
+            $table->string('status')->default('Függőben');
 
             $table->timestamp('registered_at')->useCurrent();
             $table->timestamps();

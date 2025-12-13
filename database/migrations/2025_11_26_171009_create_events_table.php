@@ -20,8 +20,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('location', 255);
             $table->dateTime('date');
-            $table->enum('status', ['Függőben', 'Megtelt', 'Lezárult'])
-            ->default('Függőben');
+            $table->string('status')->default('Aktív');
             $table->integer('capacity')->default(0);
             $table->timestamps();
         });

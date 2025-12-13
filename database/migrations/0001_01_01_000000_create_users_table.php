@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('email', 150)->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-
-  
+            $table->string('role')->default('user');
+            $table->string("status")->default("Aktív");
             $table->string('phone', 150)->unique()->nullable();
             $table->string('city', 100)->nullable();
             $table->text('about')->nullable();
