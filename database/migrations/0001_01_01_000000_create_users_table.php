@@ -24,9 +24,6 @@ return new class extends Migration
             $table->string('phone', 150)->unique()->nullable();
             $table->string('city', 100)->nullable();
             $table->text('about')->nullable();
-            $table->text('interests')->nullable();
-            $table->string('qualification', 255)->nullable();
-            $table->text('experience')->nullable();
             $table->string('profile_image', 255)->nullable();
 
             

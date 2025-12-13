@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class EventFeedback extends Model
 {
+    protected $table = 'event_feedbacks';
+
     protected $fillable = [
         'user_id',
         'organization_id',

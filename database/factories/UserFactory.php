@@ -32,9 +32,6 @@ class UserFactory extends Factory
             'status' => 'Aktív',
             'city' => fake()->city(),
             'about' => fake()->sentence(10),
-            'interests' => fake()->words(3, true),
-            'qualification' => fake()->randomElement(['középiskolai végzettség', 'egyetemi diploma', 'mesterképzés']),
-            'experience' => fake()->sentence(12),
             'profile_image' => null,
             'remember_token' => Str::random(10),
         ];

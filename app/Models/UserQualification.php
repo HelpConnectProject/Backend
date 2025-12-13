@@ -8,6 +8,7 @@ class UserQualification extends Model
 {
     protected $fillable = [
         'user_id',
+        'interest',
         'qualification',
         'experience',
     ];

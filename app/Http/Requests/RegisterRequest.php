@@ -31,7 +31,9 @@ class RegisterRequest extends FormRequest
             'phone' => 'nullable|string|max:150|unique:users,phone',
             'city' => 'nullable|string|max:100',
             'about' => 'nullable|string',
-            'interests' => 'nullable|string',
+
+            // Opcionális qualification mezők regisztrációnál
+            'interest' => 'nullable|string',
             'qualification' => 'nullable|string|max:255',
             'experience' => 'nullable|string',
         ];
@@ -60,7 +62,7 @@ class RegisterRequest extends FormRequest
 
             'city.max' => 'A város neve legfeljebb 100 karakter lehet.',
 
-            'qualification.max' => 'A végzettség mező legfeljebb 255 karakter lehet.',
+            'qualification.max' => 'A végzettség legfeljebb 255 karakter lehet.',
         ];
     }
 

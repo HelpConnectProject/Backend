@@ -8,6 +8,7 @@ use App\Models\Event;
 use App\Models\EventRegistration;
 use App\Models\EventFeedback;
 use App\Models\OrganizationMember;
+use App\Models\UserQualification;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -32,9 +33,6 @@ class DatabaseSeeder extends Seeder
             'status' => 'Aktív',
             'city' => 'Budapest',
             'about' => 'A rendszer globális adminisztrátora.',
-            'interests' => 'rendszeradminisztráció, támogatás',
-            'qualification' => 'informatikus',
-            'experience' => 'Több éves tapasztalat rendszerek üzemeltetésében.',
             'profile_image' => null,
         ]);
 
@@ -42,6 +40,68 @@ class DatabaseSeeder extends Seeder
         $users = User::factory(19)->create();
 
         $allUsers = User::all();
+
+        // 1/b. UserQualification: minden usernek legalább 3 interests, 3 qualification, 3 experience
+        $interestPool = [
+            'környezetvédelem',
+            'állatvédelem',
+            'gyermekprogramok',
+            'sport és futás',
+            'idősgondozás',
+            'oktatás és korrepetálás',
+            'adománygyűjtés',
+            'mentális egészség',
+            'közösségépítés',
+        ];
+
+        $qualificationPool = [
+            'érettségi',
+            'szociális munkás diploma',
+            'pedagógus végzettség',
+            'pszichológus',
+            'egészségügyi asszisztens',
+            'informatikus',
+            'alapfokú végzettség',
+        ];
+
+        $experiencePool = [
+            '2 év önkéntes munka idősek otthonában',
+            '3 év tapasztalat adománygyűjtő szervezésben',
+            '1 év gyermekfelügyelet és táboroztatás',
+            'Évek óta részt vesz közösségi programok szervezésében',
+            'Rendszeres részvétel utcai szemétszedésben és faültetésben',
+            'Alapítványi adminisztratív feladatok ellátása',
+            'Mentorálás fiatalok számára tanulmányi kérdésekben',
+        ];
+
+        foreach ($allUsers as $user) {
+            // 3 interest
+            $pickedInterests = collect($interestPool)->random(3)->values();
+            foreach ($pickedInterests as $text) {
+                UserQualification::create([
+                    'user_id' => $user->id,
+                    'interest' => $text,
+                ]);
+            }
+
+            // 3 qualifications
+            $pickedQualifications = collect($qualificationPool)->random(3)->values();
+            foreach ($pickedQualifications as $text) {
+                UserQualification::create([
+                    'user_id' => $user->id,
+                    'qualification' => $text,
+                ]);
+            }
+
+            // 3 experiences
+            $pickedExperiences = collect($experiencePool)->random(3)->values();
+            foreach ($pickedExperiences as $text) {
+                UserQualification::create([
+                    'user_id' => $user->id,
+                    'experience' => $text,
+                ]);
+            }
+        }
 
         // 2. Szervezetek létrehozása (legalább 10)
         $organizationsData = [

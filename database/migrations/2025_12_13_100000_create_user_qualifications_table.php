@@ -18,7 +18,8 @@ return new class extends Migration
                 ->constrained('users')
                 ->onDelete('cascade');
 
-
+            // Egy usernek több interest / qualification / experience sora lehet
+            $table->text('interest')->nullable();
             $table->string('qualification', 255)->nullable();
             $table->text('experience')->nullable();
 
