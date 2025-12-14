@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Felhasználók létrehozása
+
 
         // Superadmin az első sorban
         $superAdmin = User::create([
@@ -36,12 +36,12 @@ class DatabaseSeeder extends Seeder
             'profile_image' => null,
         ]);
 
-        // További 19 user (összesen 20)
+
         $users = User::factory(19)->create();
 
         $allUsers = User::all();
 
-        // 1/b. UserQualification: minden usernek legalább 3 interests, 3 qualification, 3 experience
+
         $interestPool = [
             'környezetvédelem',
             'állatvédelem',
@@ -103,7 +103,7 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // 2. Szervezetek létrehozása (legalább 10)
+
         $organizationsData = [
             [
                 'name' => 'Segítő Kezek Alapítvány',
@@ -111,8 +111,9 @@ class DatabaseSeeder extends Seeder
                 'category' => 'Szociális ellátás',
                 'phone' => '+36 1 234 5678',
                 'address' => 'Budapest, V. kerület, Nádor utca 4.',
+                'email' => 'info@segito-kezek.hu',
+                'website' => 'https://segito-kezek.hu',
                 'bank_account' => 'HU12 1111 2222 3333 4444 5555 6666',
-                'avg_rating' => 4.7,
             ],
             [
                 'name' => 'Mosolygó Gyermekek Egyesület',
@@ -120,8 +121,9 @@ class DatabaseSeeder extends Seeder
                 'category' => 'Gyermekvédelem',
                 'phone' => '+36 30 555 1122',
                 'address' => 'Debrecen, Piac utca 12.',
+                'email' => 'info@mosolyogyermekek.hu',
+                'website' => 'https://mosolyogyermekek.hu',
                 'bank_account' => 'HU34 2222 3333 4444 5555 6666 7777',
-                'avg_rating' => 4.6,
             ],
             [
                 'name' => 'Zöld Jövő Környezetvédelmi Kör',
@@ -129,8 +131,9 @@ class DatabaseSeeder extends Seeder
                 'category' => 'Környezetvédelem',
                 'phone' => '+36 20 987 6543',
                 'address' => 'Szeged, Kossuth Lajos sugárút 5.',
+                'email' => 'info@zoldjovo.hu',
+                'website' => 'https://zoldjovo.hu',
                 'bank_account' => 'HU56 3333 4444 5555 6666 7777 8888',
-                'avg_rating' => 4.8,
             ],
             [
                 'name' => 'Ifjúsági Mentor Program',
@@ -138,8 +141,9 @@ class DatabaseSeeder extends Seeder
                 'category' => 'Ifjúságfejlesztés',
                 'phone' => '+36 20 444 5566',
                 'address' => 'Pécs, Széchenyi tér 2.',
+                'email' => 'info@ifjusagimentor.hu',
+                'website' => 'https://ifjusagimentor.hu',
                 'bank_account' => 'HU72 4444 5555 6666 7777 8888 9999',
-                'avg_rating' => 4.5,
             ],
             [
                 'name' => 'Egészséges Életmód Klub',
@@ -147,8 +151,9 @@ class DatabaseSeeder extends Seeder
                 'category' => 'Egészség',
                 'phone' => '+36 1 777 8899',
                 'address' => 'Győr, Baross Gábor út 10.',
+                'email' => 'info@egeszseseletmodklub.hu',
+                'website' => 'https://egeszseseletmodklub.hu',
                 'bank_account' => 'HU98 5555 6666 7777 8888 9999 0000',
-                'avg_rating' => 4.4,
             ],
             [
                 'name' => 'Idősekért Összefogás',
@@ -156,8 +161,9 @@ class DatabaseSeeder extends Seeder
                 'category' => 'Idősgondozás',
                 'phone' => '+36 70 333 2211',
                 'address' => 'Miskolc, Széchenyi utca 20.',
+                'email' => 'info@idosekertosszefogas.hu',
+                'website' => 'https://idosekertosszefogas.hu',
                 'bank_account' => 'HU11 6666 7777 8888 9999 0000 1111',
-                'avg_rating' => 4.9,
             ],
             [
                 'name' => 'Utcai Ifjúsági Szolgálat',
@@ -165,8 +171,9 @@ class DatabaseSeeder extends Seeder
                 'category' => 'Ifjúságvédelem',
                 'phone' => '+36 30 111 4455',
                 'address' => 'Székesfehérvár, Fő utca 8.',
+                'email' => 'info@utcaiifjusag.hu',
+                'website' => 'https://utcaiifjusag.hu',
                 'bank_account' => 'HU22 7777 8888 9999 0000 1111 2222',
-                'avg_rating' => 4.3,
             ],
             [
                 'name' => 'Nyitott Ajtók Családsegítő',
@@ -174,8 +181,9 @@ class DatabaseSeeder extends Seeder
                 'category' => 'Családsegítés',
                 'phone' => '+36 1 222 3344',
                 'address' => 'Budapest, XI. kerület, Bartók Béla út 15.',
+                'email' => 'info@nyitottajtok.hu',
+                'website' => 'https://nyitottajtok.hu',
                 'bank_account' => 'HU33 8888 9999 0000 1111 2222 3333',
-                'avg_rating' => 4.6,
             ],
             [
                 'name' => 'Esély Mindenkinek Alapítvány',
@@ -183,8 +191,9 @@ class DatabaseSeeder extends Seeder
                 'category' => 'Esélyegyenlőség',
                 'phone' => '+36 20 222 7788',
                 'address' => 'Kecskemét, Rákóczi út 3.',
+                'email' => 'info@eselymindenkinek.hu',
+                'website' => 'https://eselymindenkinek.hu',
                 'bank_account' => 'HU44 9999 0000 1111 2222 3333 4444',
-                'avg_rating' => 4.7,
             ],
             [
                 'name' => 'Tudás Hídja Oktatási Központ',
@@ -192,8 +201,9 @@ class DatabaseSeeder extends Seeder
                 'category' => 'Oktatás',
                 'phone' => '+36 30 999 8877',
                 'address' => 'Szombathely, Fő tér 1.',
+                'email' => 'info@tudashidja.hu',
+                'website' => 'https://tudashidja.hu',
                 'bank_account' => 'HU55 0000 1111 2222 3333 4444 5555',
-                'avg_rating' => 4.5,
             ],
         ];
 
@@ -203,7 +213,7 @@ class DatabaseSeeder extends Seeder
             $org = Organization::create($data);
             $organizations->push($org);
 
-            // Owner hozzárendelése (superadmin ne legyen owner, csak manager)
+  
             $ownerUser = $allUsers->where('role', 'user')->values()->get($index % $allUsers->where('role', 'user')->count());
 
             OrganizationMember::create([
@@ -212,7 +222,7 @@ class DatabaseSeeder extends Seeder
                 'role' => 'owner',
             ]);
 
-            // 1-2 manager
+    
             $managers = $allUsers
                 ->where('id', '!=', $ownerUser->id)
                 ->where('role', 'user')
@@ -228,7 +238,7 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // 3. Események létrehozása (legalább 10)
+
         $events = collect();
 
         $eventTemplates = [
@@ -245,7 +255,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($organizations as $i => $org) {
-            // Szervezetenként legalább egy esemény
+
             $title = $eventTemplates[$i % count($eventTemplates)];
 
             $event = Event::create([
@@ -261,7 +271,6 @@ class DatabaseSeeder extends Seeder
             $events->push($event);
         }
 
-        // Ha kevesebb, mint 10 jött össze (elméletben nem), pótoljuk
         while ($events->count() < 10) {
             $org = $organizations->random();
             $event = Event::create([
@@ -276,7 +285,6 @@ class DatabaseSeeder extends Seeder
             $events->push($event);
         }
 
-        // 4. Eseményregisztrációk (legalább 20)
         $statuses = ['Függőben', 'Elfogadva', 'Lemondva'];
 
         $registrationsCount = 0;
@@ -294,7 +302,6 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // Ha még mindig kevesebb, mint 20, generáljunk pluszokat
         while ($registrationsCount < 20) {
             $event = $events->random();
             $participant = $allUsers->where('role', 'user')->random();
@@ -309,7 +316,7 @@ class DatabaseSeeder extends Seeder
             $registrationsCount++;
         }
 
-        // 5. Néhány feedback minta (nem kötelező, de jól jön teszthez)
+
         foreach ($events->take(5) as $event) {
             $org = $event->organization;
             $feedbackUser = $allUsers->where('role', 'user')->random();

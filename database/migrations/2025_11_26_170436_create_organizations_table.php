@@ -19,8 +19,9 @@ return new class extends Migration
             $table->string('category', 100)->nullable();
             $table->string('phone', 50)->nullable();
             $table->string('address', 255)->nullable();
+            $table->string('email', 100)->nullable()->unique();
+            $table->string('website', 100)->nullable();
             $table->string('bank_account', 255)->nullable();
-            $table->float('avg_rating')->default(0);
             $table->timestamps();
         });
     }
