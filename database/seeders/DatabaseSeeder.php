@@ -11,6 +11,7 @@ use App\Models\OrganizationMember;
 use App\Models\UserQualification;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Database\Seeders\EventSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,8 +22,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-
-
         // Superadmin az első sorban
         $superAdmin = User::create([
             'name' => 'Rendszer Szuperadmin',
@@ -239,53 +238,13 @@ class DatabaseSeeder extends Seeder
         }
 
 
-        $events = collect();
+        // Az eseményeket az EventSeeder hozza létre - utána futtatom ezt
+        $this->call(EventSeeder::class);
 
-        $eventTemplates = [
-            'Adománygyűjtő vásár',
-            'Családi nap a parkban',
-            'Környezettudatos hétvége',
-            'Önkéntes toborzó est',
-            'Jótékonysági futóverseny',
-            'Nyílt nap a központban',
-            'Karrier tanácsadás fiataloknak',
-            'Egészségnap szűrésekkel',
-            'Közös faültetés',
-            'Karácsonyi ajándékgyűjtés',
-        ];
+        // Az új események betöltésére van szükség az EventSeeder után
+        $events = Event::all();
 
-        foreach ($organizations as $i => $org) {
-
-            $title = $eventTemplates[$i % count($eventTemplates)];
-
-            $event = Event::create([
-                'organization_id' => $org->id,
-                'title' => $title,
-                'description' => $title . ' az adott szervezet támogatására.',
-                'location' => $org->address ?? 'Online',
-                'date' => now()->addDays($i + 3)->setTime(17, 0),
-                'status' => 'Aktív',
-                'capacity' => 50 + $i * 5,
-            ]);
-
-            $events->push($event);
-        }
-
-        while ($events->count() < 10) {
-            $org = $organizations->random();
-            $event = Event::create([
-                'organization_id' => $org->id,
-                'title' => 'Extra jótékonysági esemény',
-                'description' => 'Kiegészítő program az adományok gyűjtésére.',
-                'location' => $org->address ?? 'Online',
-                'date' => now()->addDays($events->count() + 5)->setTime(18, 0),
-                'status' => 'Aktív',
-                'capacity' => 80,
-            ]);
-            $events->push($event);
-        }
-
-        $statuses = ['Függőben', 'Elfogadva', 'Lemondva'];
+        $statuses = ['Aktív', 'Inaktív'];
 
         $registrationsCount = 0;
         foreach ($events as $event) {
@@ -330,5 +289,8 @@ class DatabaseSeeder extends Seeder
                 'image' => null,
             ]);
         }
+
+        // Az eseményeket az EventSeeder hozza létre - utána futtatom ezt
+        $this->call(EventSeeder::class);
     }
 }

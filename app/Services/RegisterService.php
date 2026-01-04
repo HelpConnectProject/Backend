@@ -29,7 +29,7 @@ class RegisterService {
 
         $user->save();
 
-        // Hozzunk létre egy sort a user_qualifications táblában is minden új userhez
+        
         UserQualification::create([
             'user_id' => $user->id,
             'interest' => $data['interest'] ?? null,

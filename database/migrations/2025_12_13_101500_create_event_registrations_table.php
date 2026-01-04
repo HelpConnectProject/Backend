@@ -22,7 +22,7 @@ return new class extends Migration
                 ->constrained('events')
                 ->onDelete('cascade');
 
-            $table->string('status')->default('Függőben');
+            $table->string('status')->default('Aktív');
 
             $table->timestamp('registered_at')->useCurrent();
             $table->timestamps();
