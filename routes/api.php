@@ -33,6 +33,9 @@ Route::group([ "middleware" => [ "auth:sanctum" ]], function() {
     
     // Event Feedback
     Route::post('/createfeedback/{eventId}', [EventFeedbackController::class, 'createFeedback']);
+    Route::delete('/deletefeedback/{feedbackId}', [EventFeedbackController::class, 'deleteFeedback']);
+
+    
 });
 
 // User

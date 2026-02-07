@@ -26,7 +26,10 @@ class EventFeedbackController extends Controller
             return $this->sendError('Csak inaktív eseményekhez lehet értékeléseket megtekinteni!', 403);
         }
 
-        $feedbacks = EventFeedback::where('event_id', $eventId)->get();
+        $feedbacks = EventFeedback::where('event_id', $eventId)
+            ->orderByDesc('updated_at')
+            ->orderByDesc('id')
+            ->get();
 
         return $this->sendResponse($feedbacks, 'Feedbackek megjelenítve!');
     }
@@ -55,5 +58,20 @@ class EventFeedbackController extends Controller
         $feedback = EventFeedback::create($validated);
 
         return $this->sendResponse($feedback, 'Értékelés sikeresen létrehozva!', 201);
+    }
+
+    public function deleteFeedback(Request $request, $feedbackId)
+    {
+        $feedback = EventFeedback::find($feedbackId);
+
+        if (!$feedback) {
+            return $this->sendError('Az értékelés nem található!', 404);
+        }
+
+        $this->authorize('delete', $feedback);
+
+        $feedback->delete();
+
+        return $this->sendResponse($feedback, 'Értékelés sikeresen törölve!');
     }
 }
