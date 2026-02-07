@@ -18,7 +18,18 @@ class EventController extends Controller
     use ResponseTrait, AuthorizesRequests; 
     public function getEvents()
     {
-        $events = Event::all();
+        $events = Event::where('status', 'Aktív')->get();
+
+        return $this->sendResponse($events, 'Események megjelenítve!');
+    }
+
+     public function getInactiveEvent($id)
+    {
+        $events = Event::where('status', 'Inaktív')
+               ->where('organization_id', $id)
+               ->get();
+
+
 
         return $this->sendResponse($events, 'Események megjelenítve!');
     }
@@ -45,7 +56,7 @@ class EventController extends Controller
             return $this->sendResponse($events, 'Összes esemény szervezetenként lebontva.');
         } 
         else { 
-            // Felhasználó csak azoknak a szervezeteknek az eseményeit látja, ahol tagja
+            
             $userOrganizations = $user->organizations()->pluck('organization_id');
 
             $events = Event::whereIn('organization_id', $userOrganizations)
@@ -72,18 +83,15 @@ class EventController extends Controller
 
     public function createEvent(EventRequest $request, $organizationId)
     {
-        // Bejelentkezettség ellenőrzése
+
         if (!$request->user()) {
             return $this->sendError('Nincs engedély', 'Bejelentkezés szükséges.', 401);
         }
 
-        // Szervezet létezésének ellenőrzése
         $organization = Organization::findOrFail($organizationId);
 
-        // Policy engedélyezés - van-e általános joga eseményt létrehozni?
         $this->authorize('create', Event::class);
 
-        // Specifikus szervezet ellenőrzés - owner vagy manager-e?
         $user = $request->user();
         $isOwnerOrManager = $user->organizations()
             ->where('organization_id', $organizationId)
@@ -94,11 +102,9 @@ class EventController extends Controller
             return $this->sendError('Nincs engedély', 'Nem vagy owner vagy manager ebben a szervezetben.', 403);
         }
 
-        // Validáció
         $validated = $request->validated();
 
-        // Event létrehozása az adott szervezethez
-        $event = Event::create([
+        $event = new Event([
             'organization_id' => $organizationId,
             'title' => $validated['title'],
             'description' => $validated['description'],
@@ -108,31 +114,27 @@ class EventController extends Controller
             'capacity' => $validated['capacity'],
         ]);
 
+        $event->setStatusByDate()->save();
+
         return $this->sendResponse($event, 'Esemény sikeresen létrehozva!');
     }
 
     public function updateEvent(EventRequest $request, $organizationId, $eventId)
     {
-        // Bejelentkezettség ellenőrzése
         if (!$request->user()) {
             return $this->sendError('Nincs engedély', 'Bejelentkezés szükséges.', 401);
         }
 
-        // Szervezet létezésének ellenőrzése
         $organization = Organization::findOrFail($organizationId);
-
-        // Event létezésének ellenőrzése
+        
         $event = Event::findOrFail($eventId);
 
-        // Ellenőrizd, hogy az event az adott szervezethez tartozik-e
         if ($event->organization_id != $organizationId) {
             return $this->sendError('Nem található', 'Ez az esemény nem tartozik ehhez a szervezethez.', 404);
         }
 
-        // Policy engedélyezés - van-e általános joga eseményt módosítani?
         $this->authorize('update', $event);
 
-        // Specifikus szervezet ellenőrzés - owner vagy manager-e?
         $user = $request->user();
         $isOwnerOrManager = $user->organizations()
             ->where('organization_id', $organizationId)
@@ -143,10 +145,8 @@ class EventController extends Controller
             return $this->sendError('Nincs engedély', 'Nem vagy owner vagy manager ebben a szervezetben.', 403);
         }
 
-        // Validáció
         $validated = $request->validated();
 
-        // Event frissítése
         $event->update([
             'title' => $validated['title'],
             'description' => $validated['description'],
@@ -156,31 +156,31 @@ class EventController extends Controller
             'capacity' => $validated['capacity'],
         ]);
 
+        $event->setStatusByDate()->save();
+
         return $this->sendResponse($event, 'Esemény sikeresen frissítve!');
     }
 
     public function deleteEvent(Request $request, $organizationId, $eventId)
     {
-        // Bejelentkezettség ellenőrzése
+       
         if (!$request->user()) {
             return $this->sendError('Nincs engedély', 'Bejelentkezés szükséges.', 401);
         }
 
-        // Szervezet létezésének ellenőrzése
+       
         $organization = Organization::findOrFail($organizationId);
 
-        // Event létezésének ellenőrzése
         $event = Event::findOrFail($eventId);
-
-        // Ellenőrizd, hogy az event az adott szervezethez tartozik-e
+        
         if ($event->organization_id != $organizationId) {
             return $this->sendError('Nem található', 'Ez az esemény nem tartozik ehhez a szervezethez.', 404);
         }
 
-        // Policy engedélyezés - van-e általános joga eseményt törölni?
+       
         $this->authorize('delete', $event);
 
-        // Specifikus szervezet ellenőrzés - owner vagy manager-e?
+       
         $user = $request->user();
         $isOwnerOrManager = $user->organizations()
             ->where('organization_id', $organizationId)
@@ -191,7 +191,7 @@ class EventController extends Controller
             return $this->sendError('Nincs engedély', 'Nem vagy owner vagy manager ebben a szervezetben.', 403);
         }
 
-        // Event törlése
+       
         $event->delete();
 
         return $this->sendResponse([], 'Esemény sikeresen törölve!');

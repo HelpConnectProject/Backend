@@ -6,6 +6,7 @@ use App\Http\Controllers\api\OrganizationController;
 use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\api\EventController;
 use App\Http\Controllers\api\EventRegistrationController;
+use App\Http\Controllers\api\EventFeedbackController;
 
 Route::group([ "middleware" => [ "auth:sanctum" ]], function() {
 
@@ -30,6 +31,8 @@ Route::group([ "middleware" => [ "auth:sanctum" ]], function() {
     Route::delete('/deleteeventregistration/{eventRegistration}', [EventRegistrationController::class, 'deleteEventRegistration']);
     Route::get('/owneventregistrations', [EventRegistrationController::class, 'getOwnEventRegistrations']);
     
+    // Event Feedback
+    Route::post('/createfeedback/{eventId}', [EventFeedbackController::class, 'createFeedback']);
 });
 
 // User
@@ -42,7 +45,11 @@ Route::get('/organizations', [OrganizationController::class, 'getOrganizations']
 
 // Event
 Route::get('/events', [EventController::class, 'getEvents']);
+Route::get('/getinactiveevent/{id}', [EventController::class, 'getInactiveEvent']);
 
 // Event Registration
+
+//Event feedbacks
+Route::get('/eventfeedbacks/{eventId}', [EventFeedbackController::class, 'getFeedbacks']);
 
 
