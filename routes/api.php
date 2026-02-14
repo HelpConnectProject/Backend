@@ -12,6 +12,9 @@ Route::group([ "middleware" => [ "auth:sanctum" ]], function() {
 
     // User
     Route::post('/logout', [UserController::class, 'logout']);
+    Route::put('/updateprofile', [UserController::class, 'updateProfile']);
+    Route::delete('/deleteprofile', [UserController::class, 'deleteProfile']);
+    Route::get('/ownprofile', [UserController::class, 'getOwnProfile']);
 
     // Organization
     Route::post('/addorganization', [OrganizationController::class, 'createOrganization']);

@@ -10,8 +10,9 @@ use App\Traits\ResponseTrait;
 use App\Models\User;
 use App\Services\RegisterService;
 use App\Services\TokenService;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\DeleteProfileRequest;
 
 
 
@@ -69,4 +70,41 @@ class UserController extends Controller
         
         return $success = $this->tokenService->deleteToken( $user );
     }  
+
+    // innen
+    
+    public function getOwnProfile(Request $request) {
+        $user = $request->user();
+        if (!$user) {
+            return $this->sendError('Unauthenticated', [], 401);
+        }
+        // $user->loadMissing(['organizationMemberships', 'qualifications']);
+        return $this->sendResponse($user, "Saját profil megjelenítve");
+    }
+
+    public function updateProfile(UpdateProfileRequest $request) {
+        $user = $request->user();
+
+        if (!$user) {
+            return $this->sendError('Unauthenticated', [], 401);
+        }
+
+        $data = $request->validated();
+        $user->update($data);
+        return $this->sendResponse($user, "Profil frissítve");
+    }
+
+    public function deleteProfile(DeleteProfileRequest $request) {
+        $user = $request->user();
+
+        if (!$user) {
+            return $this->sendError('Unauthenticated', [], 401);
+        }
+
+        $user->tokens()->delete();
+        $user->delete();
+
+        return $this->sendResponse(null, "Profil törölve");
+    }
+
 }

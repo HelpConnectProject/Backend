@@ -8,7 +8,7 @@ return [
     'allowed_methods' => ['*'],
 
     // Engedélyezett origin-ek fejlesztés alatt (Angular: http://localhost:4200)
-    'allowed_origins' => ['http://localhost:4200'],
+    'allowed_origins' => ['http://localhost:4200','http://192.168.0.136:4200'],
 
     'allowed_origins_patterns' => [],
 
