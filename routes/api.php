@@ -7,6 +7,8 @@ use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\api\EventController;
 use App\Http\Controllers\api\EventRegistrationController;
 use App\Http\Controllers\api\EventFeedbackController;
+use App\Models\User;
+
 
 Route::group([ "middleware" => [ "auth:sanctum" ]], function() {
 
@@ -15,6 +17,7 @@ Route::group([ "middleware" => [ "auth:sanctum" ]], function() {
     Route::put('/updateprofile', [UserController::class, 'updateProfile']);
     Route::delete('/deleteprofile', [UserController::class, 'deleteProfile']);
     Route::get('/ownprofile', [UserController::class, 'getOwnProfile']);
+    Route::post('/change-password', [UserController::class, 'changePassword'])->name('password.change');
 
     // Organization
     Route::post('/addorganization', [OrganizationController::class, 'createOrganization']);
@@ -57,5 +60,15 @@ Route::get('/getinactiveevent/{id}', [EventController::class, 'getInactiveEvent'
 
 //Event feedbacks
 Route::get('/eventfeedbacks/{eventId}', [EventFeedbackController::class, 'getFeedbacks']);
+
+//Email verification
+Route::get("verify_email/{id}/{hash}", function(Request $request, $id, $hash) {
+    $user = User::findOrFail($request->id);
+    if($user->hasVerifiedEmail()) {
+        return response()->json(["message" => "Ez az email már meg van erősítve."]);
+    }
+    $user->markEmailAsVerified();
+    return response()->json(["message" => "Sikeres email megerősítés."]);
+})->name("verification.verify")->middleware("signed");
 
 

@@ -13,6 +13,8 @@ use App\Services\TokenService;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\DeleteProfileRequest;
+use App\Http\Requests\ChangePasswordRequest;
+use App\Services\PasswordChangeService;
 
 
 
@@ -22,12 +24,26 @@ class UserController extends Controller
 
     protected RegisterService $registerService;
     protected TokenService $tokenService;
+    protected PasswordChangeService $passwordChangeService;
 
-    public function __construct(  RegisterService $registerService, TokenService $tokenService ) {
+    public function __construct(RegisterService $registerService, TokenService $tokenService){
 
-        $this->registerService = $registerService;
-        $this->tokenService = $tokenService;
-    }  
+    
+    $this->registerService = $registerService;
+    $this->tokenService = $tokenService;
+    $this->passwordChangeService = new PasswordChangeService();
+}
+
+public function changePassword(ChangePasswordRequest $request)
+{
+    $user = $request->user();
+    if (!$user) {
+        return $this->sendError('Unauthenticated', [], 401);
+    }
+    $validated = $request->validated();
+    $this->passwordChangeService->change($user, $validated['new_password']);
+    return $this->sendResponse(null, 'Jelszó sikeresen módosítva.');
+} 
     
     public function getUsers() {
         $users = User::with(['organizationMemberships', 'qualifications'])->get();
@@ -47,6 +63,9 @@ class UserController extends Controller
         $validated = $request->validated();
         $user = User::where('email', $validated['email'])->first();
         if ($user && Hash::check($validated['password'], $user->password)) {
+            if (!$user->hasVerifiedEmail()) {
+                return $this->sendError("Az email cím nincs megerősítve. Kérjük, erősítse meg az email címét a belépéshez.", [], 403);
+            }
             $token = $this->tokenService->generateToken($user);
             $data = [
                 'id' => $user->id,
