@@ -17,7 +17,7 @@ Route::group([ "middleware" => [ "auth:sanctum" ]], function() {
     Route::put('/updateprofile', [UserController::class, 'updateProfile']);
     Route::delete('/deleteprofile', [UserController::class, 'deleteProfile']);
     Route::get('/ownprofile', [UserController::class, 'getOwnProfile']);
-    Route::post('/change-password', [UserController::class, 'changePassword'])->name('password.change');
+    Route::post('/me/change-password', [UserController::class, 'changePassword'])->name('password.change');
 
     // Organization
     Route::post('/addorganization', [OrganizationController::class, 'createOrganization']);
@@ -43,6 +43,8 @@ Route::group([ "middleware" => [ "auth:sanctum" ]], function() {
 
     
 });
+
+Route::post('/change-password', [UserController::class, 'requestPasswordReset'])->name('password.reset.request');
 
 // User
 Route::post('/register', [UserController::class, 'register']);

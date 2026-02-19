@@ -14,6 +14,10 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\DeleteProfileRequest;
 use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\RequestPasswordResetRequest;
+use App\Mail\PasswordResetMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 use App\Services\PasswordChangeService;
 
 
@@ -26,13 +30,12 @@ class UserController extends Controller
     protected TokenService $tokenService;
     protected PasswordChangeService $passwordChangeService;
 
-    public function __construct(RegisterService $registerService, TokenService $tokenService){
-
-    
-    $this->registerService = $registerService;
-    $this->tokenService = $tokenService;
-    $this->passwordChangeService = new PasswordChangeService();
-}
+    public function __construct(RegisterService $registerService, TokenService $tokenService)
+    {
+        $this->registerService = $registerService;
+        $this->tokenService = $tokenService;
+        $this->passwordChangeService = new PasswordChangeService();
+    }
 
 public function changePassword(ChangePasswordRequest $request)
 {
@@ -44,6 +47,22 @@ public function changePassword(ChangePasswordRequest $request)
     $this->passwordChangeService->change($user, $validated['new_password']);
     return $this->sendResponse(null, 'Jelszó sikeresen módosítva.');
 } 
+
+public function requestPasswordReset(RequestPasswordResetRequest $request)
+{
+    $validated = $request->validated();
+    $email = $validated['email'];
+
+    $user = User::where('email', $email)->first();
+
+    if ($user) {
+        $token = Password::broker()->createToken($user);
+        $resetUrl = route('password.reset.form', ['token' => $token, 'email' => $email]);
+        Mail::to($email)->send(new PasswordResetMail($resetUrl));
+    }
+
+    return $this->sendResponse(['email' => $email], 'Ha a fiók létezik, elküldtük a jelszó módosításához szükséges emailt.');
+}
     
     public function getUsers() {
         $users = User::with(['organizationMemberships', 'qualifications'])->get();
