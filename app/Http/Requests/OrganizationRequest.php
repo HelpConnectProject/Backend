@@ -3,9 +3,22 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class OrganizationRequest extends FormRequest
 {
+    private const ALLOWED_CATEGORIES = [
+        'Szociális és humanitárius szervezetek',
+        'Egészségügyi szervezetek',
+        'Oktatási és tudományos szervezetek',
+        'Környezetvédelmi szervezetek',
+        'Emberi jogi és jogvédő szervezetek',
+        'Kulturális és művészeti szervezetek',
+        'Sport és szabadidős szervezetek',
+        'Ifjúsági és közösségfejlesztő szervezetek',
+        'Érdekvédelmi és szakmai szervezetek',
+    ];
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -24,7 +37,9 @@ class OrganizationRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'category' => 'nullable|string|max:255',
+            'category' => $this->isMethod('post')
+                ? ['required', Rule::in(self::ALLOWED_CATEGORIES)]
+                : ['sometimes', 'required', Rule::in(self::ALLOWED_CATEGORIES)],
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',

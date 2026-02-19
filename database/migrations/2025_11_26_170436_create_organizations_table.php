@@ -15,8 +15,17 @@ return new class extends Migration
             $table->id();
             $table->string('name', 150);
             $table->text('description')->nullable();
-            $table->string('logo', 255)->nullable();
-            $table->string('category', 100)->nullable();
+            $table->enum('category', [
+                'Szociális és humanitárius szervezetek',
+                'Egészségügyi szervezetek',
+                'Oktatási és tudományos szervezetek',
+                'Környezetvédelmi szervezetek',
+                'Emberi jogi és jogvédő szervezetek',
+                'Kulturális és művészeti szervezetek',
+                'Sport és szabadidős szervezetek',
+                'Ifjúsági és közösségfejlesztő szervezetek',
+                'Érdekvédelmi és szakmai szervezetek',
+            ]);
             $table->string('phone', 50)->nullable();
             $table->string('address', 255)->nullable();
             $table->string('email', 100)->nullable()->unique();
