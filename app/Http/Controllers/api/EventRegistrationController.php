@@ -21,6 +21,34 @@ class EventRegistrationController extends Controller
         return $this->sendResponse($eventRegistrations, 'Event registrations megjelenítve!');
     }
 
+    public function getRegistrationByOrg($eventId) {
+   
+    if (!$eventId) {
+        return $this->sendError('Hiba', 'event_id paraméter hiányzik.', 400);
+    }
+    $event = Event::find($eventId);
+    if (!$event) {
+        return $this->sendError('Hiba', 'Esemény nem található.', 404);
+    }
+    $registrations = EventRegistration::with('user')
+        ->where('event_id', $eventId)
+        ->get();
+
+    $users = $registrations->map(function($reg) {
+        return [
+            'id' => $reg->user->id,
+            'name' => $reg->user->name,
+            'email' => $reg->user->email,
+            'phone' => $reg->user->phone,
+            'city' => $reg->user->city,
+            'about' => $reg->user->about,
+            'registered_at' => $reg->registered_at,
+        ];
+    });
+
+    return $this->sendResponse($users, 'Jelentkezett userek listája.');
+    }
+
     public function getOwnEventRegistrations(Request $request)
     {
         $this->authorize('view', EventRegistration::class);
@@ -37,7 +65,12 @@ class EventRegistrationController extends Controller
 
         $user = $request->user();
 
-        Event::findOrFail($eventId);
+        $event = Event::findOrFail($eventId);
+
+        $currentCount = EventRegistration::where('event_id', $eventId)->count();
+        if ($event->capacity && $currentCount >= $event->capacity) {
+            return $this->sendError('Hiba', 'Ez az esemény megtelt és már nem lehet rá jelentkezni.', 409);
+        }
 
         $alreadyRegistered = EventRegistration::where('user_id', $user->id)
             ->where('event_id', $eventId)

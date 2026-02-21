@@ -23,7 +23,6 @@ class RegisterService {
         $user->name = $data[ "name" ];
         $user->email = $data[ "email" ];
 
-        // Optional profile fields
         $user->phone = $data["phone"] ?? null;
         $user->city = $data["city"] ?? null;
         $user->about = $data["about"] ?? null;

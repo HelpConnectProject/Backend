@@ -57,6 +57,8 @@ Route::get('/organizations', [OrganizationController::class, 'getOrganizations']
 // Event
 Route::get('/events', [EventController::class, 'getEvents']);
 Route::get('/getinactiveevent/{id}', [EventController::class, 'getInactiveEvent']);
+Route::get('/getregistrationbyorg/{eventId}', [EventRegistrationController::class, 'getRegistrationByOrg']);
+
 
 // Event Registration
 
