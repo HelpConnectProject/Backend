@@ -7,6 +7,7 @@ use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\api\EventController;
 use App\Http\Controllers\api\EventRegistrationController;
 use App\Http\Controllers\api\EventFeedbackController;
+use App\Http\Controllers\api\OrganizationMemberController;
 use App\Models\User;
 
 
@@ -18,6 +19,7 @@ Route::group([ "middleware" => [ "auth:sanctum" ]], function() {
     Route::delete('/deleteprofile', [UserController::class, 'deleteProfile']);
     Route::get('/ownprofile', [UserController::class, 'getOwnProfile']);
     Route::post('/me/change-password', [UserController::class, 'changePassword'])->name('password.change');
+    Route::get('/userbyemail', [UserController::class, 'getUserByEmail']);
 
     // Organization
     Route::post('/addorganization', [OrganizationController::class, 'createOrganization']);
@@ -40,6 +42,11 @@ Route::group([ "middleware" => [ "auth:sanctum" ]], function() {
     // Event Feedback
     Route::post('/createfeedback/{eventId}', [EventFeedbackController::class, 'createFeedback']);
     Route::delete('/deletefeedback/{feedbackId}', [EventFeedbackController::class, 'deleteFeedback']);
+
+    // Organization Members
+    Route::get('/organizationmembers/{organizationId}', [OrganizationMemberController::class, 'getOrganizationMembers']);
+    Route::post('/addmanager/{organizationId}/{userId}', [OrganizationMemberController::class, 'addManagerRole']);
+    Route::delete('/deletemanager/{organizationId}/{userId}', [OrganizationMemberController::class, 'deleteManagerRole']);
 
     
 });

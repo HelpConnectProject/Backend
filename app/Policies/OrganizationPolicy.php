@@ -25,6 +25,44 @@ class OrganizationPolicy
     }
 
     /**
+     * Determine whether the user can view organization members.
+     */
+    public function viewMembers(User $user, Organization $organization): bool
+    {
+        if ($user->role === 'superadmin') {
+            return true;
+        }
+
+        return $organization->members()
+            ->where('user_id', $user->id)
+            ->whereIn('role', ['owner', 'manager'])
+            ->exists();
+    }
+    public function addManagerRole(User $user, Organization $organization): bool
+    {
+        if ($user->role === 'superadmin') {
+            return true;
+        }
+
+        return $organization->members()
+            ->where('user_id', $user->id)
+            ->where('role', 'owner')
+            ->exists();
+    }
+
+    public function deleteManagerRole(User $user, Organization $organization): bool
+    {
+        if ($user->role === 'superadmin') {
+            return true;
+        }
+
+        return $organization->members()
+            ->where('user_id', $user->id)
+            ->where('role', 'owner')
+            ->exists();
+    }
+
+    /**
      * Determine whether the user can create models.
      */
     public function create(User $user): bool

@@ -109,7 +109,7 @@ public function requestPasswordReset(RequestPasswordResetRequest $request)
         return $success = $this->tokenService->deleteToken( $user );
     }  
 
-    // innen
+    
     
     public function getOwnProfile(Request $request) {
         $user = $request->user();
@@ -144,5 +144,24 @@ public function requestPasswordReset(RequestPasswordResetRequest $request)
 
         return $this->sendResponse(null, "Profil törölve");
     }
+
+    public function getUserByEmail(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $user = User::where('email', $validated['email'])
+            ->with(['organizationMemberships', 'qualifications'])
+            ->first();
+
+        if (! $user) {
+            return $this->sendError('Hiba', 'Felhasználó nem található.', 404);
+        }
+
+        return $this->sendResponse($user, 'Felhasználó megjelenítve.');
+    }
+
+    
 
 }
