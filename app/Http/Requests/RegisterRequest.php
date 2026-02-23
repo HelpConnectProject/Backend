@@ -72,6 +72,6 @@ class RegisterRequest extends FormRequest
             'success' => false,
             'message' => 'Adatbeviteli hiba',
             'data' => $validator->errors(),
-        ]));
+        ], 422));
     }
 }
