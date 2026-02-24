@@ -312,21 +312,6 @@ class DatabaseSeeder extends Seeder
         }
 
 
-        foreach ($events->take(5) as $event) {
-            $org = $event->organization;
-            $feedbackUser = $allUsers->where('role', 'user')->random();
-
-            EventFeedback::create([
-                'user_id' => $feedbackUser->id,
-                'organization_id' => $org->id,
-                'event_id' => $event->id,
-                'rating' => rand(3, 5),
-                'comment' => 'Nagyon jó hangulatú, jól szervezett esemény volt.',
-                'image' => null,
-            ]);
-        }
-
-        // Az eseményeket az EventSeeder hozza létre - utána futtatom ezt
-        $this->call(EventSeeder::class);
+        // (Az EventSeeder generál sok múltbeli eseményt és sok event feedbacket.)
     }
 }
