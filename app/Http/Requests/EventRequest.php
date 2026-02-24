@@ -27,7 +27,7 @@ class EventRequest extends FormRequest
             'description' => 'required|string',
             'location' => 'required|string|max:255',
             'date' => 'required|date',
-            'status' => 'required|string|in:Függőben,Aktív,Lemondva',
+            'status' => 'prohibited',
             'capacity' => 'required|integer|min:1',
         ];
     }
@@ -54,9 +54,7 @@ class EventRequest extends FormRequest
             'date.required' => 'Az esemény dátuma kötelező.',
             'date.date' => 'Az esemény dátuma érvénytelen formátumú.',
             
-            'status.required' => 'Az esemény státusza kötelező.',
-            'status.string' => 'Az esemény státusza szövegnek kell lennie.',
-            'status.in' => 'Az esemény státusza csak: Függőben, Aktív vagy Lemondva lehet.',
+            'status.prohibited' => 'A státuszt nem lehet megadni; a rendszer automatikusan számolja a dátum alapján.',
             
             'capacity.required' => 'Az esemény kapacitása kötelező.',
             'capacity.integer' => 'Az esemény kapacitása egész számnak kell lennie.',

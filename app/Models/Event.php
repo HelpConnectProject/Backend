@@ -13,7 +13,6 @@ class Event extends Model
         'description',
         'location',
         'date',
-        'status',
         'capacity',
     ];
 
@@ -24,11 +23,16 @@ class Event extends Model
     
     protected static function booted()
     {
+        static::saving(function (Event $event) {
+            $event->setStatusByDate();
+        });
+
         static::retrieved(function ($event) {
-            
-            if ($event->date && \Carbon\Carbon::now() > $event->date && $event->status !== 'Inaktív') {
-                $event->status = 'Inaktív';
-               
+            $originalStatus = $event->status;
+
+            $event->setStatusByDate();
+
+            if ($event->status !== $originalStatus) {
                 $event->saveQuietly();
             }
         });
@@ -39,9 +43,7 @@ class Event extends Model
         if ($this->date && \Carbon\Carbon::now() > $this->date) {
             $this->status = 'Inaktív';
         } else {
-            if ($this->status === 'Inaktív' || !$this->status) {
-                $this->status = 'Aktív';
-            }
+            $this->status = 'Aktív';
         }
         return $this;
     }

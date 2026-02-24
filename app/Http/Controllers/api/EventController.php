@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Models\Event;
 use App\Models\Organization;
 use App\Http\Requests\EventRequest;
+use Carbon\Carbon;
 
 
 
@@ -18,14 +19,14 @@ class EventController extends Controller
     use ResponseTrait, AuthorizesRequests; 
     public function getEvents()
     {
-        $events = Event::where('status', 'Aktív')->get();
+        $events = Event::where('date', '>=', Carbon::now())->get();
 
         return $this->sendResponse($events, 'Események megjelenítve!');
     }
 
      public function getInactiveEvent($id)
     {
-        $events = Event::where('status', 'Inaktív')
+        $events = Event::where('date', '<', Carbon::now())
                ->where('organization_id', $id)
                ->get();
 
@@ -110,7 +111,6 @@ class EventController extends Controller
             'description' => $validated['description'],
             'location' => $validated['location'],
             'date' => $validated['date'],
-            'status' => $validated['status'],
             'capacity' => $validated['capacity'],
         ]);
 
@@ -152,7 +152,6 @@ class EventController extends Controller
             'description' => $validated['description'],
             'location' => $validated['location'],
             'date' => $validated['date'],
-            'status' => $validated['status'],
             'capacity' => $validated['capacity'],
         ]);
 
