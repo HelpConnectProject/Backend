@@ -76,10 +76,8 @@ Route::get('/eventfeedbacks/{eventId}', [EventFeedbackController::class, 'getFee
 Route::get("verify_email/{id}/{hash}", function(Request $request, $id, $hash) {
     $user = User::findOrFail($request->id);
     if($user->hasVerifiedEmail()) {
-        return response()->json(["message" => "Ez az email már meg van erősítve."]);
+        return redirect()->away('http://localhost:4200/auth');
     }
     $user->markEmailAsVerified();
-    return response()->json(["message" => "Sikeres email megerősítés."]);
+    return redirect()->away('http://localhost:4200/auth');
 })->name("verification.verify")->middleware("signed");
-
-
