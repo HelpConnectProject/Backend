@@ -20,7 +20,8 @@ Route::group([ "middleware" => [ "auth:sanctum" ]], function() {
     Route::get('/ownprofile', [UserController::class, 'getOwnProfile']);
     Route::post('/me/change-password', [UserController::class, 'changePassword'])->name('password.change');
     Route::get('/userbyemail', [UserController::class, 'getUserByEmail']);
-
+    Route::get('/users', [UserController::class, 'getUsers']);
+    
     // Organization
     Route::post('/addorganization', [OrganizationController::class, 'createOrganization']);
     Route::get('/ownorganizations', [OrganizationController::class, 'getOwnOrganizations']);

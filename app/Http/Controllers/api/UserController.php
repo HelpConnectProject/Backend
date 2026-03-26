@@ -64,7 +64,18 @@ public function requestPasswordReset(RequestPasswordResetRequest $request)
     return $this->sendResponse(['email' => $email], 'Ha a fiók létezik, elküldtük a jelszó módosításához szükséges emailt.');
 }
     
-    public function getUsers() {
+    public function getUsers(Request $request) {
+
+        $user = auth('sanctum')->user();
+
+        if (!$user) {
+            return $this->sendError('Nincs engedély', 'Bejelentkezés szükséges.', 401);
+        }
+
+        if ($user->cannot('getUsers', User::class)) {
+            return $this->sendError('Nincs jogosultsag', 'Nincs jogosultsag a felhasznalok lekerdezesere.', 403);
+        }
+
         $users = User::with(['organizationMemberships', 'qualifications'])->get();
         return $this->sendResponse($users, "");
     }
@@ -161,6 +172,8 @@ public function requestPasswordReset(RequestPasswordResetRequest $request)
 
         return $this->sendResponse($user, 'Felhasználó megjelenítve.');
     }
+
+
 
     
 
