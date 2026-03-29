@@ -70,4 +70,24 @@ class UserPolicy
         }
         return false;
     }   
+
+    public function changeStatus(User $user): bool
+    {
+        if ($user->role === 'superadmin') {
+            return true;
+        }
+        return false;
+    }   
+
+    public function deleteUser(User $user): bool
+    {
+        if ($user->role === 'superadmin') {
+            return true;
+        }
+        return false;
+    }   
+
+    
+
+    
 }

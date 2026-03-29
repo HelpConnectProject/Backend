@@ -92,6 +92,9 @@ public function requestPasswordReset(RequestPasswordResetRequest $request)
     {
         $validated = $request->validated();
         $user = User::where('email', $validated['email'])->first();
+        if ($user && $user->status === 'Inaktív') {
+            return $this->sendError("A fiók inaktív. Kérjük, vegye fel a kapcsolatot az ügyfélszolgálattal.", [], 403);
+        }
         if ($user && Hash::check($validated['password'], $user->password)) {
             if (!$user->hasVerifiedEmail()) {
                 return $this->sendError("Az email cím nincs megerősítve. Kérjük, erősítse meg az email címét a belépéshez.", [], 403);
@@ -119,6 +122,56 @@ public function requestPasswordReset(RequestPasswordResetRequest $request)
         
         return $success = $this->tokenService->deleteToken( $user );
     }  
+
+    public function makeInactive(Request $request, User $user) {
+        $currentUser = auth('sanctum')->user();
+
+        if (!$currentUser) {
+            return $this->sendError('Nincs engedély', 'Bejelentkezés szükséges.', 401);
+        }
+
+        if ($currentUser->cannot('changeStatus', User::class)) {
+            return $this->sendError('Nincs jogosultsag', 'Nincs jogosultsag a felhasznalok inaktiválására.', 403);
+        }
+
+        $user->status = 'Inaktív';
+        $user->save();
+
+        return $this->sendResponse($user, "Felhasználó inaktiválva.");
+    }
+
+    public function makeActive(Request $request, User $user) {
+        $currentUser = auth('sanctum')->user();
+
+        if (!$currentUser) {
+            return $this->sendError('Nincs engedély', 'Bejelentkezés szükséges.', 401);
+        }
+
+        if ($currentUser->cannot('changeStatus', User::class)) {
+            return $this->sendError('Nincs jogosultsag', 'Nincs jogosultsag a felhasznalok aktiválására.', 403);
+        }
+
+        $user->status = 'Aktív';
+        $user->save();
+
+        return $this->sendResponse($user, "Felhasználó aktiválva.");
+    }
+
+    public function deleteUser(Request $request, User $user) {
+        $currentUser = auth('sanctum')->user();
+
+        if (!$currentUser) {
+            return $this->sendError('Nincs engedély', 'Bejelentkezés szükséges.', 401);
+        }
+
+        if ($currentUser->cannot('deleteUser', User::class)) {
+            return $this->sendError('Nincs jogosultsag', 'Nincs jogosultsag a felhasználók törlésére.', 403);
+        }
+
+        $user->delete();
+
+        return $this->sendResponse(null, "Felhasználó törölve.");
+    }
 
     
     
@@ -155,6 +208,8 @@ public function requestPasswordReset(RequestPasswordResetRequest $request)
 
         return $this->sendResponse(null, "Profil törölve");
     }
+
+    
 
     public function getUserByEmail(Request $request)
     {

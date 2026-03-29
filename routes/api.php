@@ -21,6 +21,9 @@ Route::group([ "middleware" => [ "auth:sanctum" ]], function() {
     Route::post('/me/change-password', [UserController::class, 'changePassword'])->name('password.change');
     Route::get('/userbyemail', [UserController::class, 'getUserByEmail']);
     Route::get('/users', [UserController::class, 'getUsers']);
+    Route::post('/makeinactive/{user}', [UserController::class, 'makeInactive']);
+    Route::post('/makeactive/{user}', [UserController::class, 'makeActive']);
+    Route::delete('/deleteuser/{user}', [UserController::class, 'deleteUser']);
     
     // Organization
     Route::post('/addorganization', [OrganizationController::class, 'createOrganization']);
