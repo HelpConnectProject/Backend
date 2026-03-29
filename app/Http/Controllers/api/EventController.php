@@ -42,7 +42,7 @@ class EventController extends Controller
 
         if ($user->role === 'superadmin') {
             // Superadmin látja az összes eseményt szervezetenként
-            $events = Event::get()
+            $events = Event::withTrashed()->get()
                 ->groupBy('organization_id')
                 ->map(function ($orgEvents) {
                     $firstEvent = $orgEvents->first();
@@ -53,6 +53,7 @@ class EventController extends Controller
                     ];
                 })
                 ->values();
+                
 
             return $this->sendResponse($events, 'Összes esemény szervezetenként lebontva.');
         } 

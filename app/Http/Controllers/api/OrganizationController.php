@@ -26,7 +26,8 @@ class OrganizationController extends Controller
         $user = $request->user();
 
         if ($user->role === 'superadmin') {
-            $organizations = Organization::all();
+            $organizations = Organization::withTrashed()->get();
+
         } else {
             $organizations = Organization::whereHas('members', function ($query) use ($user) {
                 $query->where('user_id', $user->id);

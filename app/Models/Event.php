@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 
 class Event extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'organization_id',
         'title',
@@ -18,6 +21,7 @@ class Event extends Model
 
     protected $casts = [
         'date' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     
