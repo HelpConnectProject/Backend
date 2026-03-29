@@ -41,14 +41,18 @@ class EventController extends Controller
         $user = $request->user();
 
         if ($user->role === 'superadmin') {
-            // Superadmin látja az összes eseményt szervezetenként
-            $events = Event::withTrashed()->get()
+           
+            $events = Event::withTrashed()
+                ->with(['organization' => function ($query) {
+                    $query->withTrashed();
+                }])
+                ->get()
                 ->groupBy('organization_id')
                 ->map(function ($orgEvents) {
                     $firstEvent = $orgEvents->first();
                     return [
                         'organization_id' => $firstEvent->organization_id,
-                        'organization_name' => $firstEvent->organization->name,
+                        'organization_name' => $firstEvent->organization?->name ?? 'Törölt szervezet',
                         'events' => $orgEvents->makeHidden('organization')->values(),
                     ];
                 })
