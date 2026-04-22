@@ -1,59 +1,90 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Felhasználói dokumentáció
+3.1 Részletes beüzemelési útmutató
+A rendszer két külön részből áll:
+•	Backend (Laravel) → ez kezeli az adatokat és az adatbázist
+•	Frontend (Angular) → ez az, amit a felhasználó lát a böngészőben
+1. Szükséges programok telepítése:
+•	PHP (legalább 8.2)** → a Laravel futtatásához
+•	Composer → a PHP csomagok kezelésére
+•	Node.js és NPM → az Angular futtatásához
+•	XAMPP(MySql) → adatbázis
+•	Angular CLI → Angular projektek indításához
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+2. A projekt letöltése
+A projekt két külön Github repository-ból áll (frontend és backend).
+Egy tetszőleges névvel létrehozott mappa parancssor (cmd) felületén kiadjuk az alábbi két parancsot a frontend és a backend klónozásához:
+•	git clone https://github.com/HelpConnectProject/Backend.git
+•	git clone https://github.com/HelpConnectProject/Frontend.git
+A mappaszerkezet ezután:
+HelpConnect/
+	Backend/
+	Frontend/
+3. Backend beüzemelése
+3.1 Belépés a backend mappába →cd Backend
+3.2 Csomagok telepítése (ez letölti az összes szükséges Laravel fájlt) →composer install
+3.3 Környezeti fájl létrehozása: A Laravel egy `.env` fájlt használ a beállításokhoz.
+	A következő parancs segítségével a Githubra is biztonságosan feltölthető .env.example
+	állomány tartalmáról készítünk egy másolatot a .env (környezeti fájl) létrehozásához. 
+	→cp .env.example .env
+	3.4 Alkalmazás kulcs generálása →php artisan key:generate
+	3.5 Adatbázis beállítása
+	Nyisd meg a `.env` fájlt egy tetszőleges szövegszerkesztővel, vagy IDE-vel, és keresd meg ezt a 
+	részt:
+DB_CONNECTION=mysql
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=laravel
+# DB_USERNAME=root
+# DB_PASSWORD=
+	Majd cseréld ki erre (ajánlott adatbázis beállítások):
+		DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=helpconnect
+DB_USERNAME=root
+DB_PASSWORD=
+	
+	Amennyiben email küldés szolgáltatásra is szükséged van(ez egy elengedhetetlen eleme a 
+	regisztrációnak és a jelszó visszaállításnak!) szükséges valamilyen mailer szolgáltatás
+	beállítása. Mi most a Gmail használatát vesszük alapul. 
+Először is be kell lépni a saját Gmail fiókba, majd meg kell nyitni a Google fiók beállításait. Ott a „Biztonság” (Security) menüpont alatt található a kétlépcsős azonosítás (2-Step Verification). Ez kötelező feltétel, tehát ha még nincs bekapcsolva, akkor először ezt kell aktiválni. A Google végigvezet a folyamaton, általában telefonszámmal vagy egy hitelesítő alkalmazással kell megerősíteni a belépést.
+Ha a kétlépcsős azonosítás már aktív, akkor ugyanebben a Biztonság menüben meg fog jelenni egy új opció „Alkalmazásjelszavak” (App Passwords) néven. Erre rákattintva létre lehet hozni egy új jelszót. A rendszer meg fog kérdezni két dolgot: hogy milyen alkalmazáshoz és milyen eszközhöz készül a jelszó. Itt igazából bármit lehet választani, például „Mail” és „Other (Custom name)”, majd adhattok neki egy nevet, például „Laravel”. Ezután a Google generál egy 16 karakteres jelszót.
+Ezt a jelszót nagyon fontos elmenteni, mert később nem lehet újra megjeleníteni. Nem a saját Gmail jelszavat kell használni, hanem kizárólag ezt az alkalmazásjelszót.
+Ezután keressük meg a .env állományban ez a részt:
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+MAIL_MAILER=log
+MAIL_SCHEME=null
+MAIL_HOST=127.0.0.1
+MAIL_PORT=2525
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_FROM_ADDRESS="hello@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
+	És cseréljük ki erre:
+MAIL_MAILER=smtp
+MAIL_SCHEME=null
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=sajatgmai@gmail.com
+MAIL_PASSWORD=app jelszó, space karakterek eltávolításával! pl. (aaaabbbbccccdddd)
+MAIL_FROM_ADDRESS=" sajatgmai@gmail.com”
+MAIL_FROM_NAME="${APP_NAME}"
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+3.6 Adatbázis táblák létrehozása (migration)
+Ez hozza létre a szükséges táblákat →php artisan migrate
+	3.7 Alap adatok feltöltése (seeder)
+	Ez feltölti az adatbázist kezdő adatokkal→php artisan db:seed
+3.8 XAMPP alkalmazás(vagy más lokális szervercsomag) megnyitása, majd 
+MySql szerver elindítása
+3.9 Backend szerver indítása→php artisan serve
+Ezután a backend itt fut: http://127.0.0.1:8000
+3.10 Kilépünk a backend mappából
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+4. Frontend beüzemelése (Angular)
+4.1 Belépés a frontend mappába →cd Frontend
+4.2 Függőségek telepítése →npm install
+4.3 Frontend indítása →ng serve -o
+	innen lesz a weboldal: http://localhost:4200
